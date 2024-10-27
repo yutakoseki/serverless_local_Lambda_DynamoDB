@@ -27,6 +27,8 @@ provider:
   runtime: python3.10
   environment:
     TZ: Asia/Tokyo
+    DYNAMODB_TABLE_NAME: Movies-dev
+    IS_OFFLINE: true
 
 functions:
   hello:
@@ -38,6 +40,16 @@ functions:
       - http:
           path: /hello
           method: get
+
+  new:
+    name: ${self:service}-new
+    handler: handler/new.lambda_handler # 新しい関数のハンドラを指定
+    environment:
+      DYNAMODB_TABLE_NAME: ${self:custom.dynamodbTableName}
+    events:
+      - http:
+          path: /new # 新しいエンドポイントのパス
+          method: get # HTTPメソッド
 
 resources:
   Resources:
